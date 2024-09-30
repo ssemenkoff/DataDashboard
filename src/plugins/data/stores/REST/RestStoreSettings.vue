@@ -20,4 +20,5 @@ const connectionsFiltered = computed(() => {
 
   <!-- eslint-disable-next-line vue/no-mutating-props -->
   <VaInput v-model="config.resourceUrl" label="Resource Url" />
+  <VaInput v-model="config.selectedJSONValue" label="Selected value" />
 </template>

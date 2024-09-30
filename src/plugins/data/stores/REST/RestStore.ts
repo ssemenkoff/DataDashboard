@@ -1,15 +1,18 @@
 export interface IRestStoreConfiguration {
   resourceUrl: string;
   connection: string;
+  selectedJSONValue?: string;
 }
 
 export default class RestStore implements IDataRetrieveable {
   private connection: any;
   private resourceUrl: string;
+  private selectedJSONValue?: string;
 
   constructor(configuration: IRestStoreConfiguration) {
     this.connection = configuration.connection;
     this.resourceUrl = configuration.resourceUrl;
+    this.selectedJSONValue = configuration.selectedJSONValue;
   }
 
   async getData() {

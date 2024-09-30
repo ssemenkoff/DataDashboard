@@ -27,6 +27,9 @@ const saveDataSource = () => {
 };
 
 const previewComponent = computed(() => {
+  if (datasourceProxy.value.type === null || datasourceProxy.value.type === undefined) {
+    return datasourceConfig.previewComponents["XMLA"];
+  }
   return datasourceConfig.previewComponents[datasourceProxy.value.type];
 });
 
@@ -50,8 +53,12 @@ const emit = defineEmits(['close']);
         <VaInput v-model="datasourceProxy.uid" label="UID" readonly />
         <VaInput v-model="datasourceProxy.name" label="Name" />
         <VaSelect v-model="datasourceProxy.type" label="Type" :options="availableDatasources" />
-        <component :is="settingsComponent" :config="datasourceProxy.config" :connections="connections"
-          :dataSources="dataSources" />
+        <component
+          :is="settingsComponent"
+          :config="datasourceProxy.config"
+          :connections="connections"
+          :dataSources="dataSources"
+        />
       </div>
       <div class="connection_editor-actions">
         <VaButton color="primary" @click="saveDataSource">Save</VaButton>
@@ -59,7 +66,11 @@ const emit = defineEmits(['close']);
       </div>
     </div>
     <div class="data-preview">
-      <component :is="previewComponent" :data-source="datasourceProxy" :key="datasourceProxy.uid" />
+      <component
+        :is="previewComponent"
+        :data-source="datasourceProxy"
+        :key="datasourceProxy.uid"
+      />
     </div>
   </div>
 </template>
