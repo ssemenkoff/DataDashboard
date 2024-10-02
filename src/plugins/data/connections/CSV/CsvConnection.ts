@@ -9,11 +9,11 @@ export default class CsvConnection implements IConnection {
     this.url = configuration.url;
   }
 
-  fetch(url: string): Promise<any> {
-    return fetch(this.url + url);
+  fetch(config: IRequestParams): Promise<any> {
+    return fetch(this.url + config.url);
   }
 
-  setConfig(config: any): void {
+  setConfig(): void {
     throw new Error("Method not implemented.");
   }
 

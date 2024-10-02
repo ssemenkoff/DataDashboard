@@ -10,43 +10,25 @@ const emit = defineEmits(['close']);
 
 const { connections, updateConnection } = useConnectionsStore();
 const connectionProxy = ref({} as any);
-const statusCheck = ref(false);
 
 const instance = getCurrentInstance();
+const connectionConfig = instance?.appContext.config.globalProperties.connectionsConfig;
 const availableConnections = Object.keys(instance?.appContext.config.globalProperties.connectionsConfig.availableConnections);
+
 
 onMounted(() => {
   const connection = connections.find((c) => c.uid === props.itemId);
-  connectionProxy.value = { ...connection };
-
-  checkStatus(connectionProxy.value.url);
+  connectionProxy.value = JSON.parse(JSON.stringify(connection));
 });
 
-watch(connectionProxy, async (newVal, oldVal) => {
-  if (newVal.url === oldVal.url && newVal.url) {
-    checkStatus(newVal.url);
-  }
-}, {
-  deep: true
+const settingsComponent = computed(() => {
+  return connectionConfig.settingsComponents[connectionProxy.value.type];
 });
 
 const saveConnection = () => {
   updateConnection(connectionProxy.value.uid, connectionProxy.value);
   emit('close');
 };
-
-const checkStatus = async (url: string) => {
-  try {
-    const testReq = await fetch(url);
-    if (testReq.ok) {
-      statusCheck.value = true;
-    } else {
-      statusCheck.value = false;
-    }
-  } catch (e) {
-    statusCheck.value = false;
-  }
-}
 </script>
 
 <template>
@@ -62,39 +44,7 @@ const checkStatus = async (url: string) => {
         <VaInput v-model="connectionProxy.name" label="Name" />
         <VaSelect v-model="connectionProxy.type" label="Type" :options="availableConnections" />
 
-        <template v-if="connectionProxy.type === 'REST'">
-          <VaInput v-model="connectionProxy.config.url" label="URL" />
-          <div class="connection_editor-status">
-            <div>
-              Status:
-            </div>
-            <template v-if="statusCheck">
-              <VaIcon color="success">check</VaIcon>
-            </template>
-            <template v-else>
-              <VaIcon color="danger">close</VaIcon>
-            </template>
-          </div>
-        </template>
-        <template v-if="connectionProxy.type === 'CSV'">
-          <VaInput v-model="connectionProxy.config.url" label="URL" />
-          <div class="connection_editor-status">
-            <div>
-              Status:
-            </div>
-            <template v-if="statusCheck">
-              <VaIcon color="success">check</VaIcon>
-            </template>
-            <template v-else>
-              <VaIcon color="danger">close</VaIcon>
-            </template>
-          </div>
-        </template>
-
-        <template v-if="connectionProxy.type === 'XMLA'">
-          <VaInput v-model="connectionProxy.server" label="Server" />
-          <VaInput v-model="connectionProxy.database" label="Database" />
-        </template>
+        <component :is="settingsComponent" :config="connectionProxy.config" />
       </div>
       <div class="connection_editor-actions">
         <VaButton color="primary" @click="saveConnection">Save</VaButton>
