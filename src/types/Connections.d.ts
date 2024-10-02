@@ -1,5 +1,10 @@
+interface IRequestParams {
+  url?: string;
+  data?: any;
+}
+
 interface IConnection {
-  fetch(url: string): Promise<any>;
+  fetch(config: IRequestParams): Promise<any>;
   setConfig(config: any): void;
 }
 

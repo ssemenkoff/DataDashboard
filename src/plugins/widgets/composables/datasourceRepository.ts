@@ -5,11 +5,11 @@ export function useDatasourceRepository(storeName: Ref<string>) {
   const instance = getCurrentInstance();
   const datasourceRepository: IDatasourceRepository = (instance?.appContext.config as any).datasourceRepository;
 
-  const data = ref(null);
+  const data = ref(null as unknown as any);
 
   const getData = () => {
-    const store = datasourceRepository.getStore(storeName.value);
-    data.value = store.getData();
+    const datasource = datasourceRepository.getDatasource(storeName.value);
+    data.value = datasource.getData();
   }
 
   watch(() => storeName.value, () => {
