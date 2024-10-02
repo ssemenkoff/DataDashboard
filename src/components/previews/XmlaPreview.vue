@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, shallowRef, getCurrentInstance, watch, ref } from 'vue';
+import MonacoEditor from '../common/monacoEditor/MonacoEditor.vue';
 const props = defineProps<{ dataSource: any }>();
 
 const instance = getCurrentInstance();

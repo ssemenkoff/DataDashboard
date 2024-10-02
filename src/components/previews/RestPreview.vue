@@ -30,6 +30,14 @@ watch(() => props.dataSource, async () => {
 </script>
 <template>
   <div v-if="tempStore">
-    <pre>{{ data }}</pre>
+    <VueJsonPretty
+      :data="data"
+      v-model:selectedValue="props.dataSource.config.selectedJSONValue"
+      showSelectController
+      highlightSelectedNode
+      collapsedOnClickBrackets
+      selectableType="single"
+      editable
+    />
   </div>
 </template>
