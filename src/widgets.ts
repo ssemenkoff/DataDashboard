@@ -4,7 +4,7 @@ import type DatasourceRepository from "./plugins/data/DatasourceRepository";
 import SampleWidget from "./plugins/widgets/SampleWidget";
 
 interface WidgetsConfig {
-    datasourceRepository: DatasourceRepository;
+  datasourceRepository: DatasourceRepository;
 }
 
 export function initWidgets(app: App, { datasourceRepository }: WidgetsConfig) {

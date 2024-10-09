@@ -15,6 +15,19 @@ export default class RestStore implements IDataRetrieveable {
     this.selectedJSONValue = configuration.selectedJSONValue;
   }
 
+  async getSelectedData() {
+    const connectionRepository = (this as any).connectionRepository;
+    if (!connectionRepository) {
+      throw new Error('ConnectionRepository is not provided to Store Classes');
+    }
+
+    const connection = connectionRepository.getConnection(this.connection);
+    if (this.selectedJSONValue) {
+      const req = await connection.fetch(this.selectedJSONValue);
+      return req.json();
+    }
+  }
+
   async getData() {
     const connectionRepository = (this as any).connectionRepository;
     if (!connectionRepository) {
