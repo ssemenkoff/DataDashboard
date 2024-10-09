@@ -10,7 +10,7 @@ export default class RestConnection implements IConnection {
   }
 
   fetch(config: IRequestParams): Promise<any> {
-    return fetch(this.url + config.url);
+    return fetch(this.url + config);
   }
 
   setConfig(): void {

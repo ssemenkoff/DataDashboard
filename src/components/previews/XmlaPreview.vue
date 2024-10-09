@@ -4,7 +4,7 @@ import MonacoEditor from '../common/monacoEditor/MonacoEditor.vue';
 const props = defineProps<{ dataSource: any }>();
 
 const instance = getCurrentInstance();
-const constructor = instance?.appContext.config.globalProperties.datasourceConfig.availableDatasources['REST'];
+const constructor = instance?.appContext.config.globalProperties.datasourceConfig.availableDatasources['XMLA'];
 const tempStore = shallowRef(null as any);
 
 const data = ref(null);
