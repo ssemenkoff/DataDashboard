@@ -16,6 +16,7 @@ const updateResourceUrl = debounce((newUrl: string) => {
 
 watch(tempResourceUrl, (newUrl) => {
   updateResourceUrl(newUrl);
+  config.selectedJSONValue = '';
 });
 
 const connectionsFiltered = computed(() => {

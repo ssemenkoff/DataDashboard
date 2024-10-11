@@ -15,7 +15,7 @@ export interface IWidget {
   }
 }
 
-export const useWidgetStore = defineStore('widgetstore', () => {
+export const useWidgetStore = defineStore('widgets', () => {
   const widgets = ref([] as IWidget[]);
   const instance = getCurrentInstance();
   

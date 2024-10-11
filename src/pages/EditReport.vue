@@ -40,8 +40,10 @@ const addWidget = () => {
 
 <template>
   <div class="report-container">
-    <h1>Edit Report</h1>
-    <div class="widget-adding-controls">
+    <div class="report-container__title">
+      <h1>Edit Report</h1>
+    </div>
+    <div class="widgets-adding-controls">
       <VaSelect label="Datasource ID" class="mx-3 my-3" v-model="selectedDatasourceName" :options="datasourceNames"/>
       <VaButton class="add-btn" icon="add" @click="addWidget">Add</VaButton>
     </div>
@@ -59,15 +61,14 @@ const addWidget = () => {
   align-items: flex-start;
   flex-direction: column;
   width: 100%;
-  // height: 100%;
 
-  h1 {
+  &__title {
     width: 100%;
     padding: 16px;
     border-bottom: 1px dashed #e0e0e0;
   }
 
-  .widget-adding-controls {
+  .widgets-adding-controls {
     display: flex;
     border: 1px solid #e0e0e0;
     border-radius: 8px;

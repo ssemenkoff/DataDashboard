@@ -1,24 +1,20 @@
 <script setup lang="ts">
-import { onMounted, shallowRef, getCurrentInstance, watch, ref } from 'vue';
+import { onMounted, shallowRef, getCurrentInstance, watch, ref, computed } from 'vue';
 const props = defineProps<{ dataSource: any }>();
 
 const instance = getCurrentInstance();
 const constructor = instance?.appContext.config.globalProperties.datasourceConfig.availableDatasources['REST'];
 const tempStore = shallowRef(null as any);
 const selectedFilter = ref("");
-const selectedValue = ref("");
 
 const data = ref(null);
-const selectedData = ref(null);
 
 onMounted(async () => {
   if (constructor.validateConfiguration(props.dataSource.config)) {
     tempStore.value = new constructor(props.dataSource.config);
 
     const req = await tempStore.value.getData();
-    const selReq = await tempStore.value.getSelectedData();
     data.value = req;
-    selectedData.value = selReq;
   }
 });
 
@@ -27,52 +23,57 @@ watch(() => props.dataSource, async () => {
     tempStore.value = new constructor(props.dataSource.config);
 
     const req = await tempStore.value.getData();
-    const selReq = await tempStore.value.getSelectedData();
     data.value = req;
-    selectedData.value = selReq;
   }
 }, { deep: true });
 
-const handleSelectedChange = (nV: string, oV: string) => {
-  selectedValue.value = nV;
+const extractDataByPath = (data: any, path: string) => {
+  if (!data) return;
+  if (path === 'root') return data;
+  const keys = path.replace('root.', '').split('.');
+  let currentValue = data;
+
+  for (const key of keys) {
+    if (key.includes('[') && key.includes(']')) {
+      const [arrayKey, index] = key.replace(']', '').split('[');
+      if (index === '' || isNaN(Number(index)) || Number(index) < 0) return;
+      currentValue = currentValue[arrayKey];
+      currentValue = Array.isArray(currentValue)
+        ? currentValue[Number(index)]
+        : null;
+    } else {
+      currentValue = currentValue[key];
+    }
+
+    if (currentValue == null) break;
+  }
+
+  return currentValue;
 };
 
-watch(selectedValue, (nV) => {
-  let result = '';
-  const parts = nV.replace('root.', '').split('.');
-
-  parts.forEach((part) => {
-    let processedPart = '';
-    for (let char of part) {
-      if (char === '[' || char === ']') {
-        processedPart += '/';
-      } else {
-        processedPart += char;
-      }
-    }
-    result += `/${processedPart}`
-  })
-  console.log(result);
-  props.dataSource.config.selectedJSONValue = result;
+const selectedData = computed(() => {
+  if (props.dataSource.config.selectedJSONValue) {
+    return extractDataByPath(data.value, props.dataSource.config.selectedJSONValue);
+  }
+  return null;
 });
 </script>
 
 <template>
   <div class="rest-preview-container" v-if="tempStore">
-    <div class="selected-json-filters">
-      <div class="selected-json-value">
-        <VaInput v-model="selectedValue" label="Selected Field"/>
+    <div class="selected-json-filters container-border">
+      <div class="selected-json-filters__value">
+        <VaInput v-model="props.dataSource.config.selectedJSONValue" label="Selected Field"/>
       </div>
-      <div class="selected-json-filter-controls">
+      <div class="selected-json-filters__controls">
         <VaSelect class="ml-2" v-model="selectedFilter" label="Filters" :options="['filter1', 'filter2', 'filter3']" />
         <VaButton class="ml-2 mt-3">Add filter</VaButton>
       </div>
     </div>
-    <div class="original-json-preview">
+    <div class="original-json-preview container-border">
       <VueJsonPretty
         :data="data"
-        v-model:selectedValue="selectedValue"
-        @selectedChange="handleSelectedChange"
+        v-model:selectedValue="props.dataSource.config.selectedJSONValue"
         showSelectController
         highlightSelectedNode
         collapsedOnClickBrackets
@@ -80,8 +81,8 @@ watch(selectedValue, (nV) => {
         editable
       />
     </div>
-    <div v-if="!selectedData" class="selected-json-preview selected-json-preview__without-data"></div>
-    <div v-else="selectedData && selectedValue" class="selected-json-preview">
+    <div v-if="!selectedData" class="selected-json-preview selected-json-preview--without-data container-border"></div>
+    <div v-else="selectedData && selectedValue" class="selected-json-preview container-border">
       <VueJsonPretty
         :data="selectedData"
       />
@@ -102,19 +103,18 @@ watch(selectedValue, (nV) => {
 
 .selected-json-filters {
   display: flex;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 16px;
   grid-row-start: 1;
   grid-column-start: 1;
   grid-row-end: 2;
   grid-column-end: 3;
+
+  &__value,
+  &__controls {
+    flex: 1;
+  }
 }
 
 .original-json-preview {
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 16px;
   grid-row-start: 2;
   grid-column-start: 1;
   grid-row-end: 5;
@@ -123,17 +123,20 @@ watch(selectedValue, (nV) => {
 }
 
 .selected-json-preview {
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 16px;
   grid-row-start: 2;
   grid-column-start: 2;
   grid-row-end: 5;
   grid-column-end: 3;
   overflow: auto;
   
-  &__without-data {
+  &--without-data {
     background: #c0c0c0;
   }
+}
+
+.container-border {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
 }
 </style>
