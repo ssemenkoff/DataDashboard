@@ -1,11 +1,23 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
+import { debounce } from 'lodash';
 
 const { config, connections } = defineProps<{
   config: any;
   connections: any;
   dataSources: any;
 }>();
+
+const tempResourceUrl = ref(config.resourceUrl);
+
+const updateResourceUrl = debounce((newUrl: string) => {
+  config.resourceUrl = newUrl;
+}, 700);
+
+watch(tempResourceUrl, (newUrl) => {
+  updateResourceUrl(newUrl);
+  config.selectedJSONValue = '';
+});
 
 const connectionsFiltered = computed(() => {
   return connections.filter((c: any) => c.type === 'REST');
@@ -19,6 +31,6 @@ const connectionsFiltered = computed(() => {
     value-by="uid" />
 
   <!-- eslint-disable-next-line vue/no-mutating-props -->
-  <VaInput v-model="config.resourceUrl" label="Resource Url" />
+  <VaInput v-model="tempResourceUrl" label="Resource Url" />
   <VaInput v-model="config.selectedJSONValue" label="Selected value" />
 </template>
