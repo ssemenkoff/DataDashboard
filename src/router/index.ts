@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import ReportView from '@/pages/ReportView.vue'
 import EditReport from '@/pages/EditReport.vue'
 import DataDesigner from '@/pages/DataDesigner.vue'
+import Configuration from '@/pages/Configuration.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -24,6 +25,11 @@ const router = createRouter({
       path: '/:id/data',
       name: 'data',
       component: DataDesigner
+    },
+    {
+      path: '/configuration',
+      name: 'config',
+      component: Configuration
     }
   ]
 })

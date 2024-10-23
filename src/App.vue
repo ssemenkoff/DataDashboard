@@ -41,6 +41,18 @@ import { RouterView } from 'vue-router'
                   </va-sidebar-item-title>
               </va-sidebar-item-content>
           </va-sidebar-item>
+          <va-sidebar-item
+              :active="$route.name === 'config'"
+              @click="$router.push('/configuration')"
+              class="pointer"
+          >
+              <va-sidebar-item-content>
+                  <va-icon name="settings" />
+                  <va-sidebar-item-title>
+                      Configuration
+                  </va-sidebar-item-title>
+              </va-sidebar-item-content>
+          </va-sidebar-item>
       </va-sidebar>
   </div>
 
