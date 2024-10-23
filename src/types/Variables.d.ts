@@ -3,6 +3,7 @@ interface IVariableConfig {
   refreshType: RefreshType;
   refreshInterval?: number;
   refreshTrigger?: string;
+  type: string;
 }
 
 interface IQueryVariableConfig extends IVariableConfig {

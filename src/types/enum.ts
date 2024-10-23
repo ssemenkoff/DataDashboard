@@ -4,7 +4,7 @@ export enum Types {
   Object = 'Object'
 }
 
-export enum SourceTypes {
+export enum SourceType {
   Constant = 'Constant',
   QueryParameter = 'Query parameter',
   SystemProperties = 'System properties',
@@ -15,9 +15,9 @@ export enum SourceTypes {
   AsyncParameters = 'Async parameters'
 }
 
-export enum RefreshTypes {
-  None = 'None',
-  Reactive = 'Reactive',
-  TimeBased = 'Time based',
-  Trigger = 'Trigger'
+export enum RefreshType {
+  None = "None",
+  Reactive = "Reactive",
+  Interval = "Interval",
+  Trigger = "Trigger",
 }

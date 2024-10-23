@@ -11,10 +11,13 @@ export class TimeVariable extends Variable {
 
       super.onInterval = () => {
         super.value = Date.now();
+        console.log("interval", this);
       }
     }
     
     get value(): any {
       return super.value;
     }
+
+    set value(value) {}
 }

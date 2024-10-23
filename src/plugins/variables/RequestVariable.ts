@@ -1,5 +1,4 @@
 import { Variable } from './Variable';
-import { RefreshType } from './RefreshTypes';
 import { VariableStorage } from './VariableStorage';
 
 export class RequestVariable extends Variable {
@@ -32,4 +31,6 @@ export class RequestVariable extends Variable {
       console.log(JSON.stringify(super.value));
       return JSON.stringify(super.value);
     }
+
+    set value(value) {}
 }

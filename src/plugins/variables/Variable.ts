@@ -1,5 +1,5 @@
 import { VariableStorage } from './VariableStorage';
-import { RefreshType } from './RefreshTypes';
+import { RefreshType } from '@/types/enum';
 
 export class Variable {
   private subscribers: any[] = [];
@@ -18,6 +18,7 @@ export class Variable {
     this.description = config.description;
 
     this.refreshInterval = config.refreshInterval || 0;
+    this.refreshInterval = Math.max(this.refreshInterval, 300);
     this.refreshType = config.refreshType || RefreshType.None;
 
     if (config.refreshType === RefreshType.Interval) {
@@ -49,5 +50,11 @@ export class Variable {
 
   unsubscribe(subscriber: () => any) {
     this.subscribers = this.subscribers.filter(sub => sub !== subscriber);
+  }
+
+  forceUpdate() {};
+
+  clearInterval() {
+    clearInterval(this.refreshIntervalId);
   }
 }

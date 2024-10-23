@@ -8,12 +8,13 @@ export class VueVariableStorageProxy {
     this.storage = storage;
   }
 
-  createVariable(type: string, name: string, config: INewVariableConfig) {
-    const variable = this.storage.createVariable(type, name, config);
+  createVariable(name: string, config: INewVariableConfig) {
+    const variable = this.storage.createVariable(name, config);
     const reactiveVariable = reactive(variable);
 
     const updateFn = () => {
-      reactiveVariable.updateTimestamp = Date.now();
+      // Forces vue to update the value
+      reactiveVariable.value = variable.value;
     };
 
     variable.subscribe(updateFn);
@@ -27,5 +28,9 @@ export class VueVariableStorageProxy {
 
   getVariable(name: string) {
     return reactive(this.storage.getVariable(name));
+  }
+
+  clearStorage() {
+    this.storage.clearStorage();
   }
 }

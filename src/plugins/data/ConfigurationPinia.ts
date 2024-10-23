@@ -1,75 +1,37 @@
-import { ref } from 'vue'
+import { ref, getCurrentInstance } from 'vue'
 import { defineStore } from 'pinia'
 import type { Types, RefreshTypes, SourceTypes } from '@/types/enum';
+import { VueVariableStorageProxy } from "@/plugins/variables/VueVariableStorageProxy";
 
-export interface IConfiguration {
-  uid: string;
+export interface ConfigurationDTO {
   name: string;
-  type: Types;
-  sourceType: SourceTypes;
-  expression: string;
-  refresh: RefreshTypes;
-  interval: number;
-  defaultValue: string;
+  config: {
+    [key: string]: any;
+  }
 }
 
 export const useConfigurationsStore = defineStore('configurations', () => {
-  const configurations = ref([] as IConfiguration[]);
-  const previousConfigurations = ref([] as IConfiguration[]);
-  
-  const savePreviousState = () => {
-    previousConfigurations.value.splice(0, configurations.value.length, ...JSON.parse(JSON.stringify(configurations.value)));
-  }
+  const configurations = ref([] as ConfigurationDTO[]);
+  const instance = getCurrentInstance();
 
-  const restorePreviousState = () => {
-    configurations.value.splice(0, configurations.value.length, ...JSON.parse(JSON.stringify(previousConfigurations.value)));
-  }
 
-  const createConfiguration = (config: IConfiguration) => {
+  const updateConfigurations = (configurationsDTO: ConfigurationDTO[]) => {
+    const variableStorage = instance?.appContext.config.globalProperties.$variableStorage as VueVariableStorageProxy;
 
-    const uid = Math.random().toString(36).substring(7);
-    configurations.value.push({
-      uid,
-      name: config.name || '',
-      type: config.type || '',
-      sourceType: config.sourceType || '',
-      expression: config.expression || '',
-      refresh: config.refresh || '',
-      interval: config.interval || 0,
-      defaultValue: config.defaultValue || ''
+    // Add validation here
+    configurations.value.splice(0);
+    
+    variableStorage.clearStorage();
+    configurationsDTO.forEach((config) => {
+      configurations.value.push(config);
+      variableStorage.createVariable(config.name, config.config as IVariableConfig);
     });
-  }
 
-  const removeConfiguration = (configurationId: string) => {
-    const index = configurations.value.findIndex((c) => c.uid === configurationId);
-
-    if (index > -1) {
-      configurations.value.splice(index, 1);
-    }
-  }
-
-  const updateConfiguration = (configurationId: string, configurationProxy: IConfiguration) => {
-    const configuration = configurations.value.find((c) => c.uid === configurationId);
-
-    if (!configuration) return;
-
-    configuration.uid = configurationProxy.uid;
-    configuration.name = configurationProxy.name;
-    configuration.type = configurationProxy.type;
-    configuration.sourceType = configurationProxy.sourceType;
-    configuration.expression = configurationProxy.expression;
-    configuration.refresh = configurationProxy.refresh;
-    configuration.interval = configurationProxy.interval;
-    configuration.defaultValue = configurationProxy.defaultValue;
+    console.log(variableStorage);
   }
 
   return {
     configurations,
-    previousConfigurations,
-    createConfiguration,
-    removeConfiguration,
-    updateConfiguration,
-    savePreviousState,
-    restorePreviousState
+    updateConfigurations,
   }
 })

@@ -3,7 +3,7 @@ import { useConnectionsStore } from "@/plugins/data/ConnectionsPinia";
 import { useDataSourcesStore } from "@/plugins/data/DatasourcePinia";
 import { VueVariableStorageProxy } from "@/plugins/variables/VueVariableStorageProxy";
 import { ref, getCurrentInstance } from "vue";
-import { RefreshType } from '@/plugins/variables/RefreshTypes';
+import { RefreshType, SourceType } from '@/types/enum';
 
 const { dataSources } = useDataSourcesStore();
 const { connections } = useConnectionsStore();
@@ -11,44 +11,51 @@ const { connections } = useConnectionsStore();
 const instance = getCurrentInstance();
 const variables = instance?.appContext.config.globalProperties.$variableStorage as VueVariableStorageProxy;
 
-const a = variables.createVariable('constant', 'a', {
+const a = variables.createVariable('a', {
+  type: SourceType.Constant,
   value: 1,
   description: 'Variable A',
   refreshType: RefreshType.None
 });
 
-const b = variables.createVariable('constant', 'b', {
+const b = variables.createVariable('b', {
+  type: SourceType.Constant,
   value: 2,
   description: 'Variable B',
   refreshType: RefreshType.None
 });
 
-const c = variables.createVariable('computed', 'c', {
+const c = variables.createVariable('c', {
+  type: SourceType.Expression,
   expression: '$a + $b + 2',
   description: 'Variable C',
   refreshType: RefreshType.None
 });
 
-const d = variables.createVariable('computed', 'd', {
+const d = variables.createVariable('d', {
+  type: SourceType.Expression,
   expression: '$a + $b + 2',
   description: 'Variable D',
   refreshType: RefreshType.None
 });
 
-const e = variables.createVariable('query', 'e', {
+const e = variables.createVariable('e', {
+  type: SourceType.QueryParameter,
   queryParam: 's',
   description: 'Variable E',
   refreshType: RefreshType.None
 });
 
-const f = variables.createVariable('request', 'f', {
+const f = variables.createVariable('f', {
+  type: SourceType.AsyncParameters,
   request: 'https://glances.ssemenkoff.dev/api/4/cpu/total',
   description: 'Variable F',
   refreshType: RefreshType.Interval,
   refreshInterval: 1000,
 });
 
-const g = variables.createVariable('time', 'g', {
+const g = variables.createVariable('g', {
+  type: SourceType.Time,
   description: 'Variable G',
   refreshType: RefreshType.Interval,
   refreshInterval: 1000,
@@ -61,7 +68,8 @@ const newVarName = ref('');
 const newVarType = ref('constant');
 
 const addVar = () => {
-  const newVar = variables.createVariable(newVarType.value, newVarName.value, {
+  const newVar = variables.createVariable(newVarName.value, {
+    type: newVarType.value,
     value: 0,
     description: 'New Variable',
     refreshType: RefreshType.None
