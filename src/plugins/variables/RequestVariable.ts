@@ -28,7 +28,6 @@ export class RequestVariable extends Variable {
     }
 
     get value(): any {
-      console.log(JSON.stringify(super.value));
       return JSON.stringify(super.value);
     }
 
