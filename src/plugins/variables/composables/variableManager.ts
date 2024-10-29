@@ -6,7 +6,7 @@ export function useVariableManager(
   config: Ref<ConfigurationDTO>,
   variableStorageProxy: VueVariableStorageProxy
 ) {
-  const variable = ref<{ name: string; config: INewVariableConfig; value: any } | null>(null);;
+  const variable = ref<{ name: string; value: any } | null>(null);;
   
   const createVariable = () => {
     removeVariable();
