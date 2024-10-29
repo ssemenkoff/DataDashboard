@@ -1,6 +1,5 @@
 import { ref, getCurrentInstance } from 'vue'
 import { defineStore } from 'pinia'
-import type { Types, RefreshTypes, SourceTypes } from '@/types/enum';
 import { VueVariableStorageProxy } from "@/plugins/variables/VueVariableStorageProxy";
 
 export interface ConfigurationDTO {

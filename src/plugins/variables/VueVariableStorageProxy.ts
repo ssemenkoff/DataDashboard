@@ -18,7 +18,7 @@ export class VueVariableStorageProxy {
     };
 
     variable.subscribe(updateFn);
-    
+    console.log(reactiveVariable)
     return reactiveVariable;
   }
 
