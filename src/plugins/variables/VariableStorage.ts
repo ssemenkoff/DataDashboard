@@ -4,9 +4,12 @@ import { QueryVariable } from "@/plugins/variables/QueryVariable";
 import { RequestVariable } from "@/plugins/variables/RequestVariable";
 import { TimeVariable } from "./TimeVariable";
 import { SourceType }  from '@/types/enum';
+import type { TinyEmitter } from "tiny-emitter";
 
 export class VariableStorage {
   private variables: { [key: string]: any } = {};
+
+  constructor(public eventBus: TinyEmitter) {}
 
   createVariable(name: string, config: INewVariableConfig) {
     console.log(config)
@@ -42,6 +45,7 @@ export class VariableStorage {
   removeVariable(name: string) {
     if (this.variables[name]) {
       this.variables[name].clearInterval();
+      this.variables[name].clearTrigger();
     }
     delete this.variables[name];
   }

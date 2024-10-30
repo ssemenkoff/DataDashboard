@@ -89,12 +89,13 @@ const isSaveAndCancelDisabled = computed(() => {
 const getVariableObject = (config) => {
   return innerVariables.value.find((variable: any) => variable.name === config.name) || {};
 };
+
 </script>
 
 <template>
   <div class="config-container">
     <VaButton @click="addEmptyConfiguration" icon="add" color="primary">Add New</VaButton>
-    <div class="config-container--record" v-for="(config, index) in innerConfiguration" :key="config.name">
+    <div class="config-container--record" v-for="config in innerConfiguration" :key="config.name">
       <VaInput v-model="config.name" label="Name" />
       <VaSelect v-model="config.config.type" :options="Object.values(SourceType)" label="Type" />
       <template v-if="config.config.type === SourceType.Constant">

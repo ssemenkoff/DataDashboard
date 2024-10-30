@@ -11,6 +11,7 @@ export class Variable {
   private refreshInterval: number = 0;
   private refreshType: RefreshType = RefreshType.None;
   private refreshIntervalId: number = 0;
+  private refreshTrigger: string = null as unknown as string;
 
   constructor(public name: string, storage: VariableStorage, config: IVariableConfig) {
     this.name = name;
@@ -20,13 +21,19 @@ export class Variable {
     this.refreshInterval = config.refreshInterval || 0;
     this.refreshInterval = Math.max(this.refreshInterval, 300);
     this.refreshType = config.refreshType || RefreshType.None;
+    this.refreshTrigger = config.refreshTrigger || null as unknown as string;
 
-    if (config.refreshType === RefreshType.Interval) {
-
-      if (config.refreshInterval) {
+    if (this.refreshType === RefreshType.Interval) {
+      if (this.refreshInterval) {
         this.refreshIntervalId = setInterval(() => {
           this.intervalFn();
         }, this.refreshInterval);
+      }
+    } else if (this.refreshType === RefreshType.Trigger) {
+      if (this.refreshTrigger) {
+          storage.eventBus.on(this.refreshTrigger, () => {
+            this.intervalFn();
+          })
       }
     };
   }
@@ -56,5 +63,11 @@ export class Variable {
 
   clearInterval() {
     clearInterval(this.refreshIntervalId);
+  }
+
+  clearTrigger() {
+    if (this.refreshTrigger) {
+      this.storage.eventBus.off(this.refreshTrigger);
+    }
   }
 }

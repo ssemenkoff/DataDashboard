@@ -7,15 +7,21 @@ import { createApp } from 'vue'
 import VueJsonPretty from 'vue-json-pretty'
 import 'vue-json-pretty/lib/styles.css'
 import './scss/main.scss'
+import { TinyEmitter } from 'tiny-emitter';
 
 import App from './App.vue'
 
 const app = createApp(App)
+const eventBus = new TinyEmitter();
+
+app.config.globalProperties.$eventBus = eventBus;
 
 app.component('VueJsonPretty', VueJsonPretty);
 initVendors(app);
 const { datasourceRepository } = initData(app);
 initWidgets(app, { datasourceRepository });
-initVariables(app);
+initVariables(app, eventBus);
+
+window.eventBus = eventBus;
 
 app.mount('#app')
