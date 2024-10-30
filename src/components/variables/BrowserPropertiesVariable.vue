@@ -10,20 +10,31 @@ const { config, variableStorageProxy } = defineProps<{
   variableStorageProxy: VueVariableStorageProxy;
 }>();
 
-const { variable, createVariable, removeVariable } = useVariableManager(
+const created = ref(false);
+
+const { variable, createVariable } = useVariableManager(
   ref(config),
-  variableStorageProxy
+  variableStorageProxy,
 );
 
 onBeforeMount(() => {
-  createVariable();
+  try {
+    createVariable();
+    created.value = true;
+  } catch (e) {
+    created.value = false;
+  }
 });
 </script>
 
 <template>
-  <VaSelect v-model="config.config.valueType" :options="Object.values(BrowserProperties)" label="Browser Property Name" />
-  <VaInput v-model="config.config.defaultValue" label="Expression" />
-  <!-- <VaSelect v-model="config.config.refreshType" :options="Object.values(RefreshType)" label="Refresh" disabled /> -->
-  <!-- <VaInput v-model="getVariableObject(config).value" label="Current Value" readonly/> -->
-  <VaInput v-model="variable.value" label="Current Value" readonly />
+  <!-- eslint-disable vue/no-mutating-props -->
+  <template v-if="created">
+    <VaSelect v-model="config.config.valueType" :options="Object.values(BrowserProperties)"
+      label="Browser Property Name" />
+    <VaInput v-model="config.config.defaultValue" label="Expression" />
+    <!-- <VaSelect v-model="config.config.refreshType" :options="Object.values(RefreshType)" label="Refresh" disabled /> -->
+    <!-- <VaInput v-model="getVariableObject(config).value" label="Current Value" readonly/> -->
+    <VaInput v-model="variable.value" label="Current Value" readonly />
+  </template>
 </template>

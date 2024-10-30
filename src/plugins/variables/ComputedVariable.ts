@@ -45,7 +45,6 @@ export class ComputedVariable extends Variable {
       dependencies.forEach(dep => {
         result = result.replace(`$${dep}`, typeof this.storage.getVariable(dep)?.value === 'number' ? this.storage.getVariable(dep)?.value : `'${this.storage.getVariable(dep)?.value}'`);
       });
-      console.log(result);
 
       const execFn = new Function(`return ${result}`);
       return execFn();

@@ -1,12 +1,13 @@
 import type { ConfigurationDTO } from "@/plugins/data/ConfigurationPinia";
-import { ref, watch, type Ref } from "vue";
+import { ref, watch, type Ref, onUnmounted } from "vue";
 import type { VueVariableStorageProxy } from "../VueVariableStorageProxy";
+import type { Variable } from "../Variable";
 
 export function useVariableManager(
   config: Ref<ConfigurationDTO>,
   variableStorageProxy: VueVariableStorageProxy
 ) {
-  const variable = ref<{ name: string; value: any } | null>(null);;
+  const variable = ref<Variable>(null as unknown as Variable);;
   
   const createVariable = () => {
     removeVariable();
@@ -16,11 +17,14 @@ export function useVariableManager(
   const removeVariable = () => {
     if (variable.value) {
       variableStorageProxy.removeVariable(variable.value.name);
-      variable.value = null;
     }
   };
 
   watch(() => config, createVariable, { deep: true });
+
+  onUnmounted(() => {
+    removeVariable();
+  });
 
   return {
     variable,

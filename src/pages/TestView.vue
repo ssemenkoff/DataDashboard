@@ -1,30 +1,19 @@
 <script lang="ts" setup>
-import { useConfigurationsStore, type ConfigurationDTO } from "@/plugins/data/ConfigurationPinia";
-import { ref, getCurrentInstance } from "vue";
+import { useConfigurationsStore } from "@/plugins/data/ConfigurationPinia";
+import { getCurrentInstance, ref } from "vue";
 import { type VueVariableStorageProxy } from "@/plugins/variables/VueVariableStorageProxy";
-import { RefreshType, SourceType, Types } from '@/types/enum';
+import type { TinyEmitter } from "tiny-emitter";
 
-const { configurations, updateConfigurations } = useConfigurationsStore();
+const { configurations } = useConfigurationsStore();
 
 const instance = getCurrentInstance();
 const variablesStorage = instance?.appContext.config.globalProperties.$variableStorage as VueVariableStorageProxy;
+const eventBus = instance?.appContext.config.globalProperties.$eventBus as TinyEmitter;
 
-
-const vars: ConfigurationDTO[] = [
-  {
-    name: "Test",
-    config: {
-      valueType: Types.Primitive,
-      type: SourceType.AsyncParameters,
-      refreshType: RefreshType.Trigger,
-      request: 'https://glances.ssemenkoff.dev/api/4/cpu/total',
-      description: 'test',
-      refreshTrigger: 'test',
-    }
-  }
-];
-
-updateConfigurations(vars);
+const eventName = ref('test');
+const triggerEvent = () => {
+  eventBus.emit('test');
+}
 </script>
 
 <template>
@@ -37,6 +26,10 @@ updateConfigurations(vars);
         <div>Value: {{ variablesStorage.getVariable(variable.name).value }}</div>
       </div>
     </div>
+    <div class="test-buttons">
+      <VaInput v-model="eventName" label="Event name"></VaInput>
+      <VaButton @click="triggerEvent">Trigger Event</VaButton>
+    </div>
   </div>
 </template>
 
@@ -48,6 +41,7 @@ updateConfigurations(vars);
   overflow: hidden;
   height: 100%;
   padding: 20px;
+  gap: 20px;
 }
 
 .configuration-editor-container h2 {
@@ -65,7 +59,18 @@ updateConfigurations(vars);
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
-  padding-bottom: 10px;
+  padding: 10px 0;
   border-bottom: 1px solid #e0e0e0;
+}
+
+.variable-item:last-child {
+  border-bottom: none;
+}
+
+.test-buttons {
+  display: flex;
+  justify-content: end;
+  align-items: end;
+  gap: 16px;
 }
 </style>

@@ -11,6 +11,7 @@ import QueryVariable from '@/components/variables/QueryVariable.vue';
 import TimeVariable from '@/components/variables/TimeVariable.vue';
 import RequestVariable from '@/components/variables/RequestVariable.vue';
 import BrowserPropertiesVariable from '../variables/BrowserPropertiesVariable.vue';
+import { TinyEmitter } from 'tiny-emitter';
 
 const componentMap: Record<any, any> = {
   [SourceType.Constant]: ConstantVariable,
@@ -26,7 +27,8 @@ const {
   updateConfigurations,
 } = useConfigurationsStore();
 
-const variableStorage = new VariableStorage();
+const emitter = new TinyEmitter();
+const variableStorage = new VariableStorage(emitter);
 const variableStorageProxy = new VueVariableStorageProxy(variableStorage);
 
 const innerConfiguration = ref(JSON.parse(JSON.stringify(configurations)));
@@ -69,7 +71,7 @@ const isSaveAndCancelDisabled = computed(() => {
 <template>
   <div class="config-container">
     <VaButton class="mb-3" @click="addEmptyConfiguration" icon="add" color="primary">Add New</VaButton>
-    <div class="config-container__record" v-for="(config, index) in innerConfiguration" :key="config.name">
+    <div class="config-container__record" v-for="(config, index) in innerConfiguration" :key="index">
       <div class="config-container__details">
         <VaInput v-model="config.name" label="Name" />
         <VaSelect v-model="config.config.type" :options="Object.values(SourceType)" label="Type" />
@@ -119,6 +121,7 @@ const isSaveAndCancelDisabled = computed(() => {
     width: 100%;
   }
 
+
   button {
     align-self: flex-end;
   }
@@ -128,17 +131,13 @@ const isSaveAndCancelDisabled = computed(() => {
   }
 
   .va-select {
-    width: 120px !important;
     font-size: 12px;
-  }
-
-  .va-select-option-list {
-    font-size: 12px;
+    min-width: 100%;
   }
 
   .va-input {
-    width: 120px !important;
     font-size: 12px;
+    min-width: 100%;
   }
 
 }
@@ -154,5 +153,9 @@ const isSaveAndCancelDisabled = computed(() => {
   button {
     margin: 16px 16px 16px 0;
   }
+}
+
+.va-select-option-list {
+  font-size: 12px;
 }
 </style>
