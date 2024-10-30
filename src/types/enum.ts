@@ -21,3 +21,15 @@ export enum RefreshType {
   Interval = "Interval",
   Trigger = "Trigger",
 }
+
+export enum BrowserProperties {
+  WindowWidth = "Window Width",
+  WindowHeight = "Window Height",
+  WindowPageXOffset = "Window pageX offset",
+  WindowPageYOffset = "Window page Y offset",
+  WindowScrollX = "Window scroll X",
+  WindowScrollY = "Window scroll Y",
+  WindowLocationHref = "Window location href",
+  NavigatorLanguage = "Navigator Language",
+  NavigatorPlatform = "Navigator Platform",
+}
