@@ -35,7 +35,7 @@ console.log(variablesStorage);
 </script>
 
 <template>
-  <div>
+  <div style="padding: 16px;">
     Report View
     <div>
       <div>

@@ -18,7 +18,7 @@ const triggerEvent = () => {
 
 <template>
   <div class="configuration-editor-container">
-    <h2>Test View</h2>
+    <!-- <h2>Test View</h2> -->
     <div class="variables-view">
       <div v-for="variable in configurations" :key="variable.name" class="variable-item">
         <div>Name: {{ variable.name }}</div>

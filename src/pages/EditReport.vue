@@ -40,9 +40,9 @@ const addWidget = () => {
 
 <template>
   <div class="report-container">
-    <div class="report-container__title">
+    <!-- <div class="report-container__title">
       <h1>Edit Report</h1>
-    </div>
+    </div> -->
     <div class="widgets-adding-controls">
       <VaSelect label="Datasource ID" class="mx-3 my-3" v-model="selectedDatasourceName" :options="datasourceNames"/>
       <VaButton class="add-btn" icon="add" @click="addWidget">Add</VaButton>
