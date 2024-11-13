@@ -2,14 +2,14 @@
 import { ref, onMounted, watch, getCurrentInstance } from 'vue';
 import WidgetWrapper from '@/plugins/widgets/Wrapper/WidgetWrapper.vue';
 import { useDataSourcesStore } from '@/plugins/data/DatasourcePinia';
-import { useWidgetStore } from '@/plugins/data/WidgetsPinia';
+import { useWidgetsStore } from '@/plugins/data/WidgetsPinia';
 
 const selectedDatasourceName = ref("");
 const selectedDatasourceId = ref("");
 const { dataSources } = useDataSourcesStore();
 
 const datasourceNames = ref([] as string[]);
-const { widgets, createWidget } = useWidgetStore();
+const { widgets, createWidget } = useWidgetsStore();
 const instance = getCurrentInstance();
 
 onMounted(() => {

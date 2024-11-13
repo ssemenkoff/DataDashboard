@@ -1,3 +1,5 @@
+import { extractDataByPath } from "@/utils/herlpers";
+
 export interface IRestStoreConfiguration {
   resourceUrl: string;
   connection: string;
@@ -15,7 +17,6 @@ export default class RestStore implements IDataRetrieveable {
     this.selectedJSONValue = configuration.selectedJSONValue;
   }
 
-
   async getData() {
     const connectionRepository = (this as any).connectionRepository;
     if (!connectionRepository) {
@@ -24,7 +25,25 @@ export default class RestStore implements IDataRetrieveable {
 
     const connection = connectionRepository.getConnection(this.connection);
     const req = await connection.fetch(this.resourceUrl);
-    return req.json();
+    const data = await req.json();
+
+    if (this.selectedJSONValue) {
+      return extractDataByPath(data, this.selectedJSONValue);
+    }
+
+    return data;
+  }
+
+  async getOriginalData() {
+    const connectionRepository = (this as any).connectionRepository;
+    if (!connectionRepository) {
+      throw new Error('ConnectionRepository is not provided to Store Classes');
+    }
+
+    const connection = connectionRepository.getConnection(this.connection);
+    const req = await connection.fetch(this.resourceUrl);
+    const data = await req.json();
+    return data;
   }
 
   static validateConfiguration(configuration: IRestStoreConfiguration) {

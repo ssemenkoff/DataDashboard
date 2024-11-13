@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, shallowRef, getCurrentInstance, watch, ref, computed } from 'vue';
+import { onMounted, shallowRef, getCurrentInstance, watch, ref } from 'vue';
 const props = defineProps<{ dataSource: any }>();
 
 const instance = getCurrentInstance();
@@ -8,55 +8,28 @@ const tempStore = shallowRef(null as any);
 const selectedFilter = ref("");
 
 const data = ref(null);
+const selectedData = ref(null);
 
 onMounted(async () => {
   if (constructor.validateConfiguration(props.dataSource.config)) {
     tempStore.value = new constructor(props.dataSource.config);
-
+    
     const req = await tempStore.value.getData();
-    data.value = req;
+    const reqOrigin = await tempStore.value.getOriginalData();
+    data.value = reqOrigin;
+    selectedData.value = req;
   }
 });
 
 watch(() => props.dataSource, async () => {
   if (constructor.validateConfiguration(props.dataSource.config)) {
     tempStore.value = new constructor(props.dataSource.config);
-
     const req = await tempStore.value.getData();
-    data.value = req;
+    const reqOrigin = await tempStore.value.getOriginalData();
+    data.value = reqOrigin;
+    selectedData.value = req;
   }
 }, { deep: true });
-
-const extractDataByPath = (data: any, path: string) => {
-  if (!data) return;
-  if (path === 'root') return data;
-  const keys = path.replace('root.', '').split('.');
-  let currentValue = data;
-
-  for (const key of keys) {
-    if (key.includes('[') && key.includes(']')) {
-      const [arrayKey, index] = key.replace(']', '').split('[');
-      if (index === '' || isNaN(Number(index)) || Number(index) < 0) return;
-      currentValue = currentValue[arrayKey];
-      currentValue = Array.isArray(currentValue)
-        ? currentValue[Number(index)]
-        : null;
-    } else {
-      currentValue = currentValue[key];
-    }
-
-    if (currentValue == null) break;
-  }
-
-  return currentValue;
-};
-
-const selectedData = computed(() => {
-  if (props.dataSource.config.selectedJSONValue) {
-    return extractDataByPath(data.value, props.dataSource.config.selectedJSONValue);
-  }
-  return null;
-});
 </script>
 
 <template>

@@ -72,7 +72,7 @@ const isSidebarHovered = ref();
 <style scoped>
 .router-view-wrapper {
   flex: 1;
-  padding-top: 58px;
+  margin-top: 58px;
   overflow-y: auto;
 }
 </style>

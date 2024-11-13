@@ -13,12 +13,11 @@ export interface DataSourceDTO {
 export const useDataSourcesStore = defineStore('datasource', () => {
   const dataSources = ref([] as DataSourceDTO[]);
   const instance = getCurrentInstance();
-  
+  const datasourceRepository = instance?.appContext.config.globalProperties.datasourceRepository;
+
   const createDataSource = (type: any, config: any = {}) => {
     const uid = Math.random().toString(36).substring(7);
     const name = 'DataSource ' + uid;
-
-    const datasourceRepository = instance?.appContext.config.globalProperties.datasourceRepository;
 
     datasourceRepository.registerDatasource(uid, type, config);
     dataSources.value.push({ uid, type, name, config });
@@ -42,10 +41,20 @@ export const useDataSourcesStore = defineStore('datasource', () => {
     dataSource.name = dataSourceProxy.name;
     dataSource.config = dataSourceProxy.config;
 
-    const datasourceRepository = instance?.appContext.config.globalProperties.datasourceRepository;
     datasourceRepository.registerDatasource(dataSourceId, dataSource.type, dataSource.config);
     console.log(datasourceRepository);
   }
 
-  return { dataSources, createDataSource, removeDataSource, updateDataSource }
+  const updateDataSources = (dataSourceProxies: DataSourceDTO[]) => {
+    
+    dataSources.value.splice(0);
+    dataSourceProxies.forEach((dataSourceProxy) => {
+
+      dataSources.value.push(dataSourceProxy);
+      
+      datasourceRepository.registerDatasource(dataSourceProxy.uid, dataSourceProxy.type, dataSourceProxy.config);
+    });
+  }
+
+  return { dataSources, createDataSource, removeDataSource, updateDataSource, updateDataSources }
 })

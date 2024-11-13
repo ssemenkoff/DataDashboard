@@ -2,8 +2,21 @@
 import { useDataSourcesStore } from '@/plugins/data/DatasourcePinia';
 import { computed, watch } from 'vue';
 import { useRoute } from 'vue-router';
+import { useSerialization } from '@/composables/useSerialization';
+import { useConfigurationsStore } from '@/plugins/data/ConfigurationPinia';
+import { useConnectionsStore } from '@/plugins/data/ConnectionsPinia';
+import { useWidgetsStore } from '@/plugins/data/WidgetsPinia';
 
 const { dataSources } = useDataSourcesStore();
+const { configurations } = useConfigurationsStore();
+const { connections } = useConnectionsStore();
+const { widgets } = useWidgetsStore();
+const { getState, loadState } = useSerialization({
+  configurations: configurations,
+  datasources: dataSources,
+  connections: connections,
+  widgets: widgets,
+})
 const route = useRoute();
 const props = defineProps({
   isSidebarHovered: Boolean
@@ -26,8 +39,15 @@ const headerTitle = computed(() => {
   }
 });
 
-const saveState = () => {
-  console.log(JSON.stringify(dataSources));
+const saveStateToStorage = () => {
+  const serState = getState();
+  localStorage.setItem("APP_STATE", serState);
+};
+
+const loadStateFromStorage = () => {
+  const state = localStorage.getItem("APP_STATE");
+
+  loadState(state);
 }
 </script>
 
@@ -35,8 +55,8 @@ const saveState = () => {
   <div class="header" :style="{ paddingLeft: headerPaddingLeft }">
     <h2 class="header__title">{{ headerTitle }}</h2>
     <div class="header__state-controls" style="display: flex; align-items: center; box-sizing: border-box;">
-      <VaButton class="mr-2" @click="saveState" icon="save">Save</VaButton>
-      <VaButton class="mr-2" @click="console.log('load')" icon="download">Load</VaButton>
+      <VaButton class="mr-2" @click="saveStateToStorage" icon="save">Save</VaButton>
+      <VaButton class="mr-2" @click="loadStateFromStorage" icon="download">Load</VaButton>
     </div>
   </div>
 </template>

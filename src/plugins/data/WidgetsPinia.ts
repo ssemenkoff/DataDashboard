@@ -15,7 +15,7 @@ export interface IWidget {
   }
 }
 
-export const useWidgetStore = defineStore('widgets', () => {
+export const useWidgetsStore = defineStore('widgets', () => {
   const widgets = ref([] as IWidget[]);
   const instance = getCurrentInstance();
   
@@ -55,5 +55,15 @@ export const useWidgetStore = defineStore('widgets', () => {
     widget.config = widgetProxy.config;
   }
 
-  return { widgets, createWidget, removeWidget, updateWidget }
+  const updateWidgets = (widgetsProxy: IWidget[]) => {
+    
+    widgets.value.splice(0);
+    widgetsProxy.forEach((widgetProxy) => {
+
+      widgets.value.push(widgetProxy);
+      
+    });
+  }
+
+  return { widgets, createWidget, removeWidget, updateWidget, updateWidgets }
 })
