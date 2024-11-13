@@ -4,7 +4,7 @@ import ConfigEditor from '@/components/editors/ConfigEditor.vue';
 
 <template>
   <div class="configuration-editor-container">
-    <h2>Configuration Editor</h2>
+    <!-- <h2>Configuration Editor</h2> -->
     <ConfigEditor />
   </div>
 </template>

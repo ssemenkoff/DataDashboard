@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { toRefs, computed, getCurrentInstance, onMounted } from 'vue';
-import { useWidgetStore } from '@/plugins/data/WidgetsPinia';
+import { useWidgetsStore } from '@/plugins/data/WidgetsPinia';
 
 const props = defineProps<{ widget: any }>();
 const { widget } = toRefs(props);
 
-const { removeWidget } = useWidgetStore();
+const { removeWidget } = useWidgetsStore();
 
 const instance = getCurrentInstance();
 const availableWidgets = instance?.appContext.config.globalProperties.availableWidgets;

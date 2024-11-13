@@ -29,7 +29,7 @@ const closeEditor = () => {
 
 <template>
   <div class="dataDesigner-container">
-    <h2>Data Designer</h2>
+    <!-- <h2>Data Designer</h2> -->
     <div class="dataDesigner-layout">
       <DataSourceList class="datasourceList" @openEditor="openEditor" />
       <ConnectionList class="connectionList" @openEditor="openEditor" />

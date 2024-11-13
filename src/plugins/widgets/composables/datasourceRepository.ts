@@ -1,4 +1,4 @@
-import { getCurrentInstance, onMounted, type Ref } from 'vue';
+import {  getCurrentInstance, onMounted, type Ref } from 'vue';
 import { watch, ref } from 'vue';
 
 export function useDatasourceRepository(dataSourceId: Ref<string>) {
@@ -10,7 +10,7 @@ export function useDatasourceRepository(dataSourceId: Ref<string>) {
   const getData = async () => {
     const dataSource = datasourceRepository.getDatasource(dataSourceId.value);
     data.value = await dataSource.getData();
-  }
+  };
 
   watch(() => dataSourceId.value, () => {
     getData();

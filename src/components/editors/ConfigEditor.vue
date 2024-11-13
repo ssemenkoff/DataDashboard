@@ -1,27 +1,14 @@
 <script lang="ts" setup>
 import { useConfigurationsStore, type ConfigurationDTO } from '@/plugins/data/ConfigurationPinia';
 import { Types, RefreshType, SourceType } from '@/types/enum';
-import { computed, watch, ref } from 'vue';
+import { computed, watch, ref, getCurrentInstance } from 'vue';
 import { VariableStorage } from '@/plugins/variables/VariableStorage';
 import { VueVariableStorageProxy } from '@/plugins/variables/VueVariableStorageProxy';
 
-import ComputedVariable from '@/components/variables/ComputedVariable.vue';
-import ConstantVariable from '@/components/variables/ConstantVariable.vue';
-import QueryVariable from '@/components/variables/QueryVariable.vue';
-import TimeVariable from '@/components/variables/TimeVariable.vue';
-import RequestVariable from '@/components/variables/RequestVariable.vue';
-import BrowserPropertiesVariable from '../variables/BrowserPropertiesVariable.vue';
 import { TinyEmitter } from 'tiny-emitter';
 
-const componentMap: Record<any, any> = {
-  [SourceType.Constant]: ConstantVariable,
-  [SourceType.Expression]: ComputedVariable,
-  [SourceType.QueryParameter]: QueryVariable,
-  [SourceType.AsyncParameters]: RequestVariable,
-  [SourceType.Time]: TimeVariable,
-  [SourceType.BrowserProperties]: BrowserPropertiesVariable,
-};
-
+const instance = getCurrentInstance();
+const componentMap = instance?.appContext.config.globalProperties.componentMap;
 const {
   configurations,
   updateConfigurations,
@@ -32,6 +19,14 @@ const variableStorage = new VariableStorage(emitter);
 const variableStorageProxy = new VueVariableStorageProxy(variableStorage);
 
 const innerConfiguration = ref(JSON.parse(JSON.stringify(configurations)));
+
+watch(
+  configurations,
+  (newConfigurations) => {
+    innerConfiguration.value = JSON.parse(JSON.stringify(newConfigurations));
+  },
+  { deep: true }
+);
 
 const addEmptyConfiguration = () => {
   const newVar = {

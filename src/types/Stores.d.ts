@@ -1,5 +1,6 @@
 interface IDataRetrieveable {
   getData(): Promise<any>;
+  getOriginalData(): any;
 }
 
 interface IDatasourceRepository {

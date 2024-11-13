@@ -25,9 +25,27 @@ import RestPreview from "@/components/previews/RestPreview.vue";
 import XmlaPreview from "@/components/previews/XmlaPreview.vue";
 import DataTablePreview from "@/components/previews/DataTablePreview.vue";
 
+import ComputedVariable from '@/components/variables/ComputedVariable.vue';
+import ConstantVariable from '@/components/variables/ConstantVariable.vue';
+import QueryVariable from '@/components/variables/QueryVariable.vue';
+import TimeVariable from '@/components/variables/TimeVariable.vue';
+import RequestVariable from '@/components/variables/RequestVariable.vue';
+import BrowserPropertiesVariable from '@/components/variables/BrowserPropertiesVariable.vue';
 
+import { SourceType } from '@/types/enum';
 
 export function initData(app: App) {
+  const componentMap = {
+    [SourceType.Constant]: ConstantVariable,
+    [SourceType.Expression]: ComputedVariable,
+    [SourceType.QueryParameter]: QueryVariable,
+    [SourceType.AsyncParameters]: RequestVariable,
+    [SourceType.Time]: TimeVariable,
+    [SourceType.BrowserProperties]: BrowserPropertiesVariable,
+  };
+  
+  app.config.globalProperties.componentMap = componentMap;
+
   const availableConnections = {
       REST: RestConnection,
       CSV: CsvConnection,
@@ -80,6 +98,8 @@ export function initData(app: App) {
   (RestStore.prototype as any).datasourceRepository = datasourceRepository;
   (CsvStore.prototype as any).datasourceRepository = datasourceRepository;
   (DataTableComposer.prototype as any).datasourceRepository = datasourceRepository;
+
+
 
   return {
     datasourceRepository

@@ -2,14 +2,14 @@
 import { ref, onMounted, watch, getCurrentInstance } from 'vue';
 import WidgetWrapper from '@/plugins/widgets/Wrapper/WidgetWrapper.vue';
 import { useDataSourcesStore } from '@/plugins/data/DatasourcePinia';
-import { useWidgetStore } from '@/plugins/data/WidgetsPinia';
+import { useWidgetsStore } from '@/plugins/data/WidgetsPinia';
 
 const selectedDatasourceName = ref("");
 const selectedDatasourceId = ref("");
 const { dataSources } = useDataSourcesStore();
 
 const datasourceNames = ref([] as string[]);
-const { widgets, createWidget } = useWidgetStore();
+const { widgets, createWidget } = useWidgetsStore();
 const instance = getCurrentInstance();
 
 onMounted(() => {
@@ -40,9 +40,9 @@ const addWidget = () => {
 
 <template>
   <div class="report-container">
-    <div class="report-container__title">
+    <!-- <div class="report-container__title">
       <h1>Edit Report</h1>
-    </div>
+    </div> -->
     <div class="widgets-adding-controls">
       <VaSelect label="Datasource ID" class="mx-3 my-3" v-model="selectedDatasourceName" :options="datasourceNames"/>
       <VaButton class="add-btn" icon="add" @click="addWidget">Add</VaButton>
