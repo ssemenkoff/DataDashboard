@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { debounce } from 'lodash';
 
 const { config } = defineProps<{
@@ -17,6 +17,14 @@ const updateUrl = debounce((newUrl: string) => {
 
 watch(url, (newUrl) =>  updateUrl(newUrl));
 
+onMounted(async () => {
+  if (url.value) {
+    const resp = await ifUrlExist(url.value);
+    available.value = resp.available;
+    statusCode.value = resp.statusCode;
+  }
+});
+
 function isValidUrl(url: string): boolean {
   try {
     const parsedUrl = new URL(url);
@@ -29,12 +37,7 @@ function isValidUrl(url: string): boolean {
 async function ifUrlExist(url: string) {
   try {
     const response = await fetch(url, { method: 'HEAD' });
-
-    if (response.ok) {
-      return { available: true, statusCode: response.status.toString() };
-    } else {
-      return { available: false, statusCode: response.status.toString() };
-    }
+    return { available: response.ok, statusCode: response.status.toString() };
   } catch (error: any) {
     console.warn('Network error:', error.name);
     return { available: false, statusCode: 'Error' };
@@ -61,7 +64,7 @@ const statusTextClass = computed(() => {
 
 <template>
   <!-- eslint-disable-next-line vue/no-mutating-props -->
-  <VaInput v-model="url" label="URL" :rules="[() => isUrlValid || `Invalid URL`]" />
+  <VaInput v-model="url" label="URL" :rules="[() => !url || isUrlValid || `Invalid URL`]" />
       
   <div v-if="isUrlValid && url" class="ml-2 request-status">
     <div :class="statusCircleClass" class="status-circle"></div>
