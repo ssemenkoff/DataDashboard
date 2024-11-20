@@ -22,16 +22,19 @@ export default class RestStore implements IDataRetrieveable {
     if (!connectionRepository) {
       throw new Error('ConnectionRepository is not provided to Store Classes');
     }
+    try {
+      const connection = connectionRepository.getConnection(this.connection);
+      const req = await connection.fetch(this.resourceUrl);
+      const data = await req.json();
 
-    const connection = connectionRepository.getConnection(this.connection);
-    const req = await connection.fetch(this.resourceUrl);
-    const data = await req.json();
+      if (this.selectedJSONValue) {
+        return extractDataByPath(data, this.selectedJSONValue);
+      }
 
-    if (this.selectedJSONValue) {
-      return extractDataByPath(data, this.selectedJSONValue);
+      return data;
+    } catch(e: any) {
+      console.warn("Invalid resource URL", e.name);
     }
-
-    return data;
   }
 
   async getOriginalData() {
@@ -39,11 +42,15 @@ export default class RestStore implements IDataRetrieveable {
     if (!connectionRepository) {
       throw new Error('ConnectionRepository is not provided to Store Classes');
     }
-
-    const connection = connectionRepository.getConnection(this.connection);
-    const req = await connection.fetch(this.resourceUrl);
-    const data = await req.json();
-    return data;
+    try {
+      const connection = connectionRepository.getConnection(this.connection);
+      const req = await connection.fetch(this.resourceUrl);
+      const data = await req.json();
+      
+      return data;
+    } catch(e: any) {
+      console.warn("Invalid resource URL", e.name)
+    }
   }
 
   static validateConfiguration(configuration: IRestStoreConfiguration) {
