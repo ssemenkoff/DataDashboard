@@ -21,7 +21,7 @@ export const useWidgetsStore = defineStore('widgets', () => {
   
   const createWidget = (type: any, config: any = {}) => {
     const uid = Math.random().toString(36).substring(7);
-    const wdigetName = 'widget_' + uid;
+    const widgetName = 'widget_' + uid;
 
     widgets.value.push(
       { 
@@ -30,10 +30,11 @@ export const useWidgetsStore = defineStore('widgets', () => {
         // wrapperConfig,
         config: {
           datasourceId: config.datasourceId,
-          settings: { name: wdigetName }
+          settings: { name: widgetName }
         }
       }
     );
+    return uid;
   }
 
   const removeWidget = (widgetId: string) => {

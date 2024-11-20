@@ -1,21 +1,24 @@
 <script lang="ts" setup>
 import { useDataSourcesStore } from '@/plugins/data/DatasourcePinia';
-import { computed, watch } from 'vue';
+import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useSerialization } from '@/composables/useSerialization';
 import { useConfigurationsStore } from '@/plugins/data/ConfigurationPinia';
 import { useConnectionsStore } from '@/plugins/data/ConnectionsPinia';
 import { useWidgetsStore } from '@/plugins/data/WidgetsPinia';
+import { useLayoutStore } from '@/plugins/data/LayoutsPinia';
 
 const { dataSources } = useDataSourcesStore();
 const { configurations } = useConfigurationsStore();
 const { connections } = useConnectionsStore();
 const { widgets } = useWidgetsStore();
+const { layout } = useLayoutStore();
 const { getState, loadState } = useSerialization({
   configurations: configurations,
   datasources: dataSources,
   connections: connections,
   widgets: widgets,
+  layout: layout,
 })
 const route = useRoute();
 const props = defineProps({
