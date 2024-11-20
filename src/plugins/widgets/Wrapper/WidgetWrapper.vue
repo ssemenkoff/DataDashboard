@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { toRefs, computed, getCurrentInstance, onMounted } from 'vue';
+import { toRefs, computed, getCurrentInstance } from 'vue';
 import { useWidgetsStore } from '@/plugins/data/WidgetsPinia';
+import { useLayoutStore } from '@/plugins/data/LayoutsPinia';
 
 const props = defineProps<{ widget: any }>();
 const { widget } = toRefs(props);
 
 const { removeWidget } = useWidgetsStore();
+const { removeLayoutItem } = useLayoutStore();
 
 const instance = getCurrentInstance();
 const availableWidgets = instance?.appContext.config.globalProperties.availableWidgets;
@@ -16,6 +18,7 @@ const isWidgetRegistered = computed(() => {
 
 const deleteWidget = (id: string): void => {
   removeWidget(id);
+  removeLayoutItem(id);
 }
 
 const openSettings = (name: string): void => {
@@ -40,14 +43,12 @@ const openSettings = (name: string): void => {
 
 <style scoped>
 .wrapper {
-  max-width: 350px;
-  max-height: 250px;
   width: 100%;
   height: 100%;
-  min-width: 150px;
-  min-height: 150px;
   border: 1px solid #ccc;
   border-radius: 5px;
   box-sizing: border-box;
+  background-color: white;
+  cursor: pointer;
 }
 </style>

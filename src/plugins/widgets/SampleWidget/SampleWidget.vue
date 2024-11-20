@@ -27,12 +27,8 @@ const { data } = useDatasourceRepository(datasourceId);
 
 <style scoped>
 .widget {
-  max-width: 350px;
-  max-height: 250px;
   width: 100%;
   height: 100%;
-  min-width: 150px;
-  min-height: 150px;
   position: relative;
 }
 
