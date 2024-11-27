@@ -6,10 +6,19 @@ import { ref, getCurrentInstance } from "vue";
 import { RefreshType, SourceType, Types } from '@/types/enum';
 import { useConfigurationsStore, type ConfigurationDTO } from "@/plugins/data/ConfigurationPinia";
 import type { TinyEmitter } from "tiny-emitter";
+import { useWidgetsStore, type IWidget } from "@/plugins/data/WidgetsPinia";
+import { useMoveableLayout } from "@/composables/movableLayout";
+import { useLayoutStore } from "@/plugins/data/LayoutsPinia";
+import WidgetWrapper from "@/plugins/widgets/Wrapper/WidgetWrapper.vue";
 
 const { dataSources } = useDataSourcesStore();
 const { connections } = useConnectionsStore();
 const { configurations, updateConfigurations } = useConfigurationsStore();
+const { widgets } = useWidgetsStore();
+const { layout } = useLayoutStore();
+const {
+  getInitialStyle,
+} = useMoveableLayout(ref(layout));
 
 const instance = getCurrentInstance();
 const variablesStorage = instance?.appContext.config.globalProperties.$variableStorage as VueVariableStorageProxy;
@@ -68,9 +77,43 @@ console.log(variablesStorage);
       <VaButton @click="eventBus.emit('test')">Trigger Event</VaButton>
     </div>
   </div>
+  <div class="widget-board">
+    <template v-for="widget in widgets" :key="widget.uid">
+      <div
+        :class="`${widget.uid} dashboard-item-container`"
+        :style="getInitialStyle(widget.uid)"
+        :ref="widget.uid"
+      >
+        <div class="dashboard-item">
+          <WidgetWrapper
+            :widget="widget"
+            :ref="`${widget.uid}_wrapper`"
+          />
+        </div>
+      </div>
+    </template>
+  </div>
 </template>
 
 <style scoped>
+.widget-board {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  padding: 35px 35px 0 35px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.dashboard-item {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.dashboard-item-container {
+  position: absolute;
+}
 .var-item {
   display: flex;
   flex-direction: row;
