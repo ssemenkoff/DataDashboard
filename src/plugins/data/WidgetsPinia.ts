@@ -1,16 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-
-export interface IWidget {
-  uid: string,
-  type: 'SampleWidget',
-  // wrapperConfig?: {
-  //   [key: string]: any;
-  // },
-  config: {
-    datasourceId: string,
-  }
-}
+import type { IWidget } from '@/types/widgets';
 
 export const useWidgetsStore = defineStore('widgets', () => {
   const widgets = ref([] as IWidget[]);
