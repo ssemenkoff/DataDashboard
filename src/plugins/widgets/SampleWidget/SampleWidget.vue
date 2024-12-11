@@ -27,8 +27,4 @@ const { data } = useDatasourceRepository(datasourceId);
   height: 100%;
   position: relative;
 }
-
-.widget-content {
-  padding: 12px;
-}
 </style>
