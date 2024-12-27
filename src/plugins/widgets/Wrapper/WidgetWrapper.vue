@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toRefs, computed, getCurrentInstance } from 'vue';
+import { toRefs, computed, getCurrentInstance, onMounted } from 'vue';
 const props = defineProps<{ widget: any }>();
 const { widget } = toRefs(props);
 
@@ -20,8 +20,8 @@ const isWidgetRegistered = computed(() => {
       :datasourceId="widget.config.datasourceId"
     />
   </div>
-  <div v-else>
-    <p>Widget type {{ widget.type }} is not registered.</p>
+  <div class="wrapper" v-else>
+    <div>Widget type {{ widget.type }} is not registered.</div>
   </div>
 </template>
 
@@ -31,6 +31,7 @@ const isWidgetRegistered = computed(() => {
   height: 100%;
   border: 1px solid #ccc;
   border-radius: 5px;
+  padding: 12px;
   box-sizing: border-box;
   background-color: white;
   cursor: pointer;
